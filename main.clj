@@ -1,5 +1,6 @@
-(ns main)
-(:use '(incanter core stats charts io))
+(ns main
+  (:use [incanter core charts stats datasets]))
+
 
 (def vertices
   (list {:x 1, :y 1}
@@ -39,7 +40,6 @@
   [s1 s2]
   (zipmap [:a :b] [(:a s1) (:b s2)]))
 
-(mutate-solution (random-solution))
 
 (view (histogram (sample-normal 1000)))
 
