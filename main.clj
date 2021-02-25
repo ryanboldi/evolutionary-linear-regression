@@ -1,6 +1,5 @@
 (ns main)
-(require 'incanter.stats)
-(alias 'inc 'incanter.stats)
+(:use '(incanter core stats charts io))
 
 (def vertices
   (list {:x 1, :y 1}
@@ -34,13 +33,15 @@
 
 (defn mutate-solution
   [solution]
-  (zipmap [:a :b] [(inc/sample-normal 1 :mean (:a solution) :sd mutation-size) (inc/sample-normal 1 :mean (:b solution) :sd mutation-size)]))
+  (zipmap [:a :b] [(sample-normal 1 :mean (:a solution) :sd mutation-size) (sample-normal 1 :mean (:b solution) :sd mutation-size)]))
 
 (defn cross-solutions
   [s1 s2]
   (zipmap [:a :b] [(:a s1) (:b s2)]))
 
+(mutate-solution (random-solution))
 
+(view (histogram (sample-normal 1000)))
 
 (defn -main
   [& args]
