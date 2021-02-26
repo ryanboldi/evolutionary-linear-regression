@@ -1,6 +1,5 @@
 (ns main
-  (:use [incanter core charts stats datasets]))
-
+  (:require [incanter.core :refer [view]]))
 
 (def vertices
   (list {:x 1, :y 1}
