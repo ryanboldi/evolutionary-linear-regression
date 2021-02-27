@@ -1,5 +1,7 @@
 (ns main
-  (:require [incanter.core :refer [view]]))
+  (:require [incanter.core :as i.core :refer [view]])
+  (:require [incanter.charts :as i.charts :refer [histogram scatter-plot]])
+  (:require [incanter.stats :as i.stats :refer [sample-normal]]))
 
 (def vertices
   (list {:x 1, :y 1}
@@ -7,7 +9,6 @@
         {:x 4, :y 4}
         {:x 5, :y 6}))
 
-(def parameters 2) ; y = ax + b
 (def mutation-rate 0.2)
 (def mutation-size 0.2) ; sd of the normal sampling
 
@@ -39,6 +40,8 @@
   [s1 s2]
   (zipmap [:a :b] [(:a s1) (:b s2)]))
 
+
+()
 
 (view (histogram (sample-normal 1000)))
 
