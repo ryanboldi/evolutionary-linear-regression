@@ -21,17 +21,13 @@
 (defn random-solution
   "returns a random solution"
   ([] (random-solution 10 10))
-  ([a-lim b-lim] (zipmap [:a :b] [(rand a-lim) (rand b-lim)])))
-
-(random-solution)
+  ([a-lim b-lim] (zipmap [:a :b] [(- (rand a-lim) (quot a-lim 2)) (- (rand b-lim) (quot b-lim 2))])))
 
 (defn visualize-solution
   [solution]
-  (add-function plain-image (fn [x] (+ (:b solution) (* (:a solution) x))) 0 6))
-
-(view plain-image)
-(view (visualize-solution (random-solution)))
-(view (add-function plain-image (fn [x] (+ x 4)) 0 6))
+  (-> (xy-plot)
+      (add-points :x :y :data (to-dataset vertices))
+      (add-function (fn [x] (+ (:b solution) (* (:a solution) x))) 0 6)))
 
 (defn get-y
   "gets the respective y value for a point for a given solution"
