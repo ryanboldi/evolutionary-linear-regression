@@ -13,9 +13,7 @@
         {:x 6, :y 6}))
 
 (i.core/to-dataset vertices)
-(def image (add-points (xy-plot) :x :y :data (to-dataset vertices)))
-(view image)
-(view image)
+(def plain-image (add-points (xy-plot) :x :y :data (to-dataset vertices)))
 
 (def mutation-rate 0.2)
 (def mutation-size 0.2) ; sd of the normal sampling
@@ -29,9 +27,11 @@
 
 (defn visualize-solution
   [solution]
-  (add-function image (fn [x] (+ (:b solution) (* (:a solution) x))) 0 6))
+  (add-function plain-image (fn [x] (+ (:b solution) (* (:a solution) x))) 0 6))
 
+(view plain-image)
 (view (visualize-solution (random-solution)))
+(view (add-function plain-image (fn [x] (+ x 4)) 0 6))
 
 (defn get-y
   "gets the respective y value for a point for a given solution"
