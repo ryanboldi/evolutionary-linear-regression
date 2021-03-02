@@ -1,38 +1,16 @@
 (ns main
-  (:require [incanter.core :as i.core :refer [view sin]])
-  (:require [incanter.charts :as i.charts :refer [histogram function-plot]])
+  (:require [incanter.core :as i.core :refer [view]])
+  (:require [incanter.charts :as i.charts :refer [histogram scatter-plot]])
   (:require [incanter.stats :as i.stats :refer [sample-normal]])
   (:require [incanter.datasets :as i.data]))
-
-
-(view (function-plot sin -4 4))
-(i.data/get-dataset :cars)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 (def vertices
   (list {:x 1, :y 1}
         {:x 3, :y 2}
         {:x 4, :y 4}
         {:x 5, :y 6}))
+
+(view (scatter-plot :x :y (i.data/to-dataset vertices)))
 
 (def mutation-rate 0.2)
 (def mutation-size 0.2) ; sd of the normal sampling
@@ -64,9 +42,6 @@
 (defn cross-solutions
   [s1 s2]
   (zipmap [:a :b] [(:a s1) (:b s2)]))
-
-
-()
 
 (view (histogram (sample-normal 1000)))
 
