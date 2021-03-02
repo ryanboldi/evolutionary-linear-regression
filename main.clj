@@ -1,16 +1,21 @@
 (ns main
-  (:require [incanter.core :as i.core :refer [view]])
-  (:require [incanter.charts :as i.charts :refer [histogram scatter-plot]])
+  (:require [incanter.core :as i.core :refer [view to-dataset]])
+  (:require [incanter.charts :as i.charts :refer [histogram xy-plot add-points add-function]])
   (:require [incanter.stats :as i.stats :refer [sample-normal]])
   (:require [incanter.datasets :as i.data]))
 
 (def vertices
   (list {:x 1, :y 1}
-        {:x 3, :y 2}
+        {:x 2, :y 2}
+        {:x 3, :y 3}
         {:x 4, :y 4}
-        {:x 5, :y 6}))
+        {:x 5, :y 5}
+        {:x 6, :y 6}))
 
-(view (scatter-plot :x :y (i.data/to-dataset vertices)))
+(i.core/to-dataset vertices)
+(def image (add-points (xy-plot) :x :y :data (to-dataset vertices)))
+(view image)
+(view image)
 
 (def mutation-rate 0.2)
 (def mutation-size 0.2) ; sd of the normal sampling
@@ -19,6 +24,14 @@
   "returns a random solution"
   ([] (random-solution 10 10))
   ([a-lim b-lim] (zipmap [:a :b] [(rand a-lim) (rand b-lim)])))
+
+(random-solution)
+
+(defn visualize-solution
+  [solution]
+  (add-function image (fn [x] (+ (:b solution) (* (:a solution) x))) 0 6))
+
+(view (visualize-solution (random-solution)))
 
 (defn get-y
   "gets the respective y value for a point for a given solution"
