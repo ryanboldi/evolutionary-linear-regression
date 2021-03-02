@@ -1,7 +1,32 @@
 (ns main
-  (:require [incanter.core :as i.core :refer [view]])
-  (:require [incanter.charts :as i.charts :refer [histogram scatter-plot]])
-  (:require [incanter.stats :as i.stats :refer [sample-normal]]))
+  (:require [incanter.core :as i.core :refer [view sin]])
+  (:require [incanter.charts :as i.charts :refer [histogram function-plot]])
+  (:require [incanter.stats :as i.stats :refer [sample-normal]])
+  (:require [incanter.datasets :as i.data]))
+
+
+(view (function-plot sin -4 4))
+(i.data/get-dataset :cars)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 (def vertices
   (list {:x 1, :y 1}
