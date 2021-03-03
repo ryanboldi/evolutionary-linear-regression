@@ -76,10 +76,23 @@
   [population]
   (map assess-solution population))
 
+(defn get-worst-solution
+  "returns the solution with the highest fitness (worst)"
+  [population]
+  (:solution
+   (apply max-key :score
+          (map
+           #(zipmap [:solution :score] [% (assess-solution %)]) population))))
+
+(defn inverse-assess-population
+  "returns an inversed assessed population where a lower score is worse for roulette wheel"
+  [population]
+  (map #(- (assess-solution (get-worst-solution population)) (assess-solution %)) population))
+
 (defn roulette-wheel-select
   "randomly selects a solution weighted towards higher fitness solutions"
   [population]
-  (let [pop population scores (assess-population population) total-score (reduce + scores) rand-num (rand)]
+  (let [pop population scores (inverse-assess-population population) total-score (reduce + scores) rand-num (rand)]
     (loop [index 0 sum-so-far (/ (nth scores 0) total-score)]
       (if (< rand-num sum-so-far)
         (nth pop index)
@@ -126,17 +139,22 @@
           (map
            #(zipmap [:solution :score] [% (assess-solution %)]) population))))
 
-(get-best-solution (init-evolution))
-(view (visualize-solution (get-best-solution (init-evolution))))
+(defn average-fitness
+  "returns the average-fitness of a population"
+  [population]
+  (/ (reduce + (assess-population population)) (count population)))
 
-(take population-size (init-evolution))
+(defn print-pop-stats
+  "prints out the population's stats"
+  [population]
+  (println (str "Best Fitness: " (assess-solution (get-best-solution population))))
+  (println (str "Average Fitness: " (average-fitness population))))
+
 
 (def pop (init-evolution))
-pop
-(assess-population pop)
-(get-best-solution pop)
-(assess-solution (get-best-solution pop))
-(view (visualize-solution (get-best-solution pop)))
+(print-pop-stats pop)
+(assess-solution (roulette-wheel-select pop))
+
 
 (defn -main
   [& args]
