@@ -12,11 +12,16 @@
         {:x 5, :y 5}
         {:x 6, :y 6}))
 
-(i.core/to-dataset vertices)
 (def plain-image (add-points (xy-plot) :x :y :data (to-dataset vertices)))
 
+(def population-size 10)
+(def survival-rate 0.5)
+(def num-parents (* survival-rate population-size))
 (def mutation-rate 0.2)
+(def crossover-rate 0.5)
 (def mutation-size 0.2) ; sd of the normal sampling
+
+;--- SOLUTION FUNCTIONS
 
 (defn random-solution
   "returns a random solution"
@@ -29,7 +34,8 @@
   (-> (xy-plot)
       (add-points :x :y :data (to-dataset vertices))
       (add-function (fn [x] (+ (:b solution) (* (:a solution) x)))
-                    (dec (min-key :x vertices)) (inc (max-key :x vertices)))))
+                    (dec (:x (apply min-key :x vertices)))
+                    (inc (:x (apply max-key :x vertices))))))
 
 (defn get-y
   "gets the respective y value for a point for a given solution"
@@ -46,10 +52,6 @@
   [solution]
   (reduce + (map compare-vert (repeat (count vertices) solution) vertices)))
 
-(def solution1 (random-solution))
-(assess-solution solution1)
-(view (visualize-solution solution1))
-
 (defn mutate-solution
   "returns a mutated solution via a normal distribution"
   [solution]
@@ -61,6 +63,62 @@
   (if (> (rand) 1)
     (zipmap [:a :b] [(:a s1) (:b s2)])
     (zipmap [:a :b] [(:a s2) (:b s1)])))
+
+;--- POPULATION FUNCTIONS
+
+(defn init-evolution
+  "returns the starting generation of evolution"
+  []
+  (repeat population-size (random-solution)))
+
+(defn assess-population
+  "returns a list of the population's individual fitnesses"
+  [population]
+  (map assess-solution population))
+
+(defn roulette-wheel-select
+  "randomly selects a solution weighted towards higher fitness solutions"
+  [population]
+  (let [pop population scores (assess-population population) total-score (reduce + scores) rand-num (rand)]
+    (loop [index 0 sum-so-far (/ (nth scores 0) total-score)]
+      (if (< rand-num sum-so-far)
+        (nth pop index)
+        (recur (inc index) (+ sum-so-far (/ (nth scores index) total-score)))))))
+
+(defn maybe-mutate
+  "every solution will pass through this function.
+  mutate the solutions with a given probability"
+  [solution]
+  (if (< (rand) mutation-rate)
+    (mutate-solution solution)
+    solution))
+
+(defn cross-and-create
+  "given the entire parent population, 
+   select two parents to crossover, returning the child"
+  [parents]
+  (cross-solutions (rand-nth parents) (rand-nth parents)))
+
+(defn duplicate-and-create
+  "randomly select a parent to just be placed into the next pop"
+  [parents]
+  (rand-nth parents))
+
+(defn child-creation-instruction-functions
+  []
+  (repeat (- population-size num-parents)
+          (if (< (rand) crossover-rate)
+            cross-and-create
+            duplicate-and-create)))
+
+(defn create-new-pop
+  [old-pop]
+  (let [parents (repeat num-parents (roulette-wheel-select old-pop))]
+    (conj parents (map child-creation-instruction-functions (repeat (- population-size num-parents) parents)))))
+
+(create-new-pop (init-evolution))
+
+(child-creation-instruction-functions)
 
 (defn -main
   [& args]
