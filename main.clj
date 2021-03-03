@@ -106,8 +106,8 @@
 
 (defn child-creation-instruction-functions
   []
-  (repeat (- population-size num-parents)
-          (if (< (rand) crossover-rate)
+  (repeatedly  (- population-size num-parents)
+          #(if (< (rand) crossover-rate)
             cross-and-create
             duplicate-and-create)))
 
