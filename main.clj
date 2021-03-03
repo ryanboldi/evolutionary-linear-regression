@@ -84,15 +84,28 @@
           (map
            #(zipmap [:solution :score] [% (assess-solution %)]) population))))
 
+(defn normalize
+  "normalize numbers to a new range"
+  [old-min old-max new-min new-max x]
+  (* (- new-max new-min) (/ (- x old-min) (- old-max old-min))))
+
+(defn sqr [x]
+  (* x x))
+
 (defn inverse-assess-population
   "returns an inversed assessed population where a lower score is worse for roulette wheel"
   [population]
-  (map #(- (assess-solution (get-worst-solution population)) (assess-solution %)) population))
+  (let [worst-score (sqr (assess-solution (get-worst-solution population)))]
+    (map #(- 100 (normalize 0 worst-score 0 100 %)) (map sqr (assess-population population)))))
+
+(def population (init-evolution))
+(assess-population population)
+(inverse-assess-population population)
 
 (defn roulette-wheel-select
   "randomly selects a solution weighted towards higher fitness solutions"
   [population]
-  (let [pop population scores (inverse-assess-population population) total-score (reduce + scores) rand-num (rand)]
+  (let [pop population scores (inverse-assess-population pop) total-score (reduce + scores) rand-num (rand)]
     (loop [index 0 sum-so-far (/ (nth scores 0) total-score)]
       (if (< rand-num sum-so-far)
         (nth pop index)
