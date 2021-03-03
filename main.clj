@@ -89,23 +89,37 @@
   [old-min old-max new-min new-max x]
   (* (- new-max new-min) (/ (- x old-min) (- old-max old-min))))
 
+(defn average-fitness
+  "returns the average-fitness of a population"
+  [population]
+  (/ (reduce + (assess-population population)) (count population)))
+
 (defn sqr [x]
   (* x x))
 
-(defn inverse-assess-population
+(defn inverse-scores
   "returns an inversed assessed population where a lower score is worse for roulette wheel"
-  [population]
-  (let [worst-score (sqr (assess-solution (get-worst-solution population)))]
-    (map #(- 100 (normalize 0 worst-score 0 100 %)) (map sqr (assess-population population)))))
+  [scores]
+  (let [worst-score (apply max scores)]
+    (map #(- 100 (normalize 0 worst-score 0 100 %)) scores)))
 
-(def population (init-evolution))
-(assess-population population)
-(inverse-assess-population population)
+(defn cull-score-if-needed
+  [solution average-fitness]
+  (if (< average-fitness (assess-solution solution))
+    average-fitness
+    (assess-solution solution)))
+
+(defn get-culled-scores
+  "returns a list with all numbers above the average set to the average value."
+  [population]
+  (let [average-score (average-fitness population)]
+    (for [sol population]
+      (cull-score-if-needed sol average-score))))
 
 (defn roulette-wheel-select
   "randomly selects a solution weighted towards higher fitness solutions"
   [population]
-  (let [pop population scores (inverse-assess-population pop) total-score (reduce + scores) rand-num (rand)]
+  (let [pop population scores (inverse-scores (get-culled-scores pop)) total-score (reduce + scores) rand-num (rand)]
     (loop [index 0 sum-so-far (/ (nth scores 0) total-score)]
       (if (< rand-num sum-so-far)
         (nth pop index)
@@ -151,11 +165,6 @@
    (apply min-key :score
           (map
            #(zipmap [:solution :score] [% (assess-solution %)]) population))))
-
-(defn average-fitness
-  "returns the average-fitness of a population"
-  [population]
-  (/ (reduce + (assess-population population)) (count population)))
 
 (defn print-pop-stats
   "prints out the population's stats"
