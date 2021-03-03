@@ -108,9 +108,9 @@
   "returns a lazy-seq of functions to create the missing children with"
   []
   (repeatedly  (- population-size num-parents)
-          #(if (< (rand) crossover-rate)
-            cross-and-create
-            duplicate-and-create)))
+               #(if (< (rand) crossover-rate)
+                  cross-and-create
+                  duplicate-and-create)))
 
 (defn create-new-pop
   "given an old population, create a new one based on evolutionary rules and probabilities"
@@ -121,10 +121,10 @@
 (defn get-best-solution
   "gets the solution with the smallest score in the population"
   [population]
-  (def population (init-evolution))
-  (:solution (min-key :score
-                      (map 
-                       #(zipmap [:solution :score] [% (assess-solution %)]) population))))
+  (:solution
+   (min-key :score
+            (map
+             #(zipmap [:solution :score] [% (assess-solution %)]) population))))
 
 (get-best-solution (init-evolution))
 (view (visualize-solution (get-best-solution (init-evolution))))
