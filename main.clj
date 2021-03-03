@@ -18,7 +18,7 @@
 (def survival-rate 0.5)
 (def num-parents (* survival-rate population-size))
 (def mutation-rate 0.2)
-(def crossover-rate 0.5)
+(def crossover-rate 0.1)
 (def mutation-size 0.2) ; sd of the normal sampling
 
 ;--- SOLUTION FUNCTIONS
@@ -105,6 +105,7 @@
   (rand-nth parents))
 
 (defn child-creation-instruction-functions
+  "returns a lazy-seq of functions to create the missing children with"
   []
   (repeatedly  (- population-size num-parents)
           #(if (< (rand) crossover-rate)
@@ -112,13 +113,21 @@
             duplicate-and-create)))
 
 (defn create-new-pop
+  "given an old population, create a new one based on evolutionary rules and probabilities"
   [old-pop]
   (let [parents (repeat num-parents (roulette-wheel-select old-pop))]
-    (conj parents (map child-creation-instruction-functions (repeat (- population-size num-parents) parents)))))
+    (into parents (map #(% parents) (child-creation-instruction-functions)))))
 
-(create-new-pop (init-evolution))
+(defn get-best-solution
+  "gets the solution with the smallest score in the population"
+  [population]
+  (def population (init-evolution))
+  (:solution (min-key :score
+                      (map 
+                       #(zipmap [:solution :score] [% (assess-solution %)]) population))))
 
-(child-creation-instruction-functions)
+(get-best-solution (init-evolution))
+(view (visualize-solution (get-best-solution (init-evolution))))
 
 (defn -main
   [& args]
