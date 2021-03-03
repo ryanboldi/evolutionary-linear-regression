@@ -172,12 +172,6 @@
   (println (str "Best Fitness: " (assess-solution (get-best-solution population))))
   (println (str "Average Fitness: " (average-fitness population))))
 
-
-(def pop (init-evolution))
-(print-pop-stats pop)
-(assess-solution (roulette-wheel-select pop))
-
-
 (defn -main
   [& args]
   (println "Hello world!"))
