@@ -24,10 +24,12 @@
   ([a-lim b-lim] (zipmap [:a :b] [(- (rand a-lim) (quot a-lim 2)) (- (rand b-lim) (quot b-lim 2))])))
 
 (defn visualize-solution
+  "returns a viewable incanter plot"
   [solution]
   (-> (xy-plot)
       (add-points :x :y :data (to-dataset vertices))
-      (add-function (fn [x] (+ (:b solution) (* (:a solution) x))) 0 6)))
+      (add-function (fn [x] (+ (:b solution) (* (:a solution) x)))
+                    (dec (min-key :x vertices)) (inc (max-key :x vertices)))))
 
 (defn get-y
   "gets the respective y value for a point for a given solution"
@@ -42,17 +44,23 @@
 (defn assess-solution
   "returns the fitness of a solution"
   [solution]
-  (reduce + (map compare-vert (repeat solution (count vertices)) vertices)))
+  (reduce + (map compare-vert (repeat (count vertices) solution) vertices)))
+
+(def solution1 (random-solution))
+(assess-solution solution1)
+(view (visualize-solution solution1))
 
 (defn mutate-solution
+  "returns a mutated solution via a normal distribution"
   [solution]
   (zipmap [:a :b] [(sample-normal 1 :mean (:a solution) :sd mutation-size) (sample-normal 1 :mean (:b solution) :sd mutation-size)]))
 
 (defn cross-solutions
+  "crosses two solutions together"
   [s1 s2]
-  (zipmap [:a :b] [(:a s1) (:b s2)]))
-
-(view (histogram (sample-normal 1000)))
+  (if (> (rand) 1)
+    (zipmap [:a :b] [(:a s1) (:b s2)])
+    (zipmap [:a :b] [(:a s2) (:b s1)])))
 
 (defn -main
   [& args]
