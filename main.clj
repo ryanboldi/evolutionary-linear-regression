@@ -69,7 +69,7 @@
 (defn init-evolution
   "returns the starting generation of evolution"
   []
-  (repeatedly population-size (random-solution)))
+  (repeatedly population-size #(random-solution)))
 
 (defn assess-population
   "returns a list of the population's individual fitnesses"
@@ -122,18 +122,21 @@
   "gets the solution with the smallest score in the population"
   [population]
   (:solution
-   (apply max-key :score
+   (apply min-key :score
           (map
            #(zipmap [:solution :score] [% (assess-solution %)]) population))))
 
 (get-best-solution (init-evolution))
 (view (visualize-solution (get-best-solution (init-evolution))))
 
-(def population (init-evolution))
-(assess-population population)
-(get-best-solution population)
-(assess-solution (get-best-solution population))
-(view (visualize-solution (get-best-solution population)))
+(take population-size (init-evolution))
+
+(def pop (init-evolution))
+pop
+(assess-population pop)
+(get-best-solution pop)
+(assess-solution (get-best-solution pop))
+(view (visualize-solution (get-best-solution pop)))
 
 (defn -main
   [& args]
