@@ -172,6 +172,8 @@
   (println (str "Best Fitness: " (assess-solution (get-best-solution population))))
   (println (str "Average Fitness: " (average-fitness population))))
 
+
+(view plain-image)
 (view (visualize-solution (get-best-solution (init-evolution))))
 
 (defn -main
