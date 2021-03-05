@@ -7,7 +7,9 @@
 
 (def vertices)
 
-(read-dataset "./data/brain_body.csv")
+(view (read-dataset "./data/brain_body.csv"
+                    :header true
+                    :delim \space))
 
 (def plain-image (add-points (xy-plot) :x :y :data (to-dataset vertices)))
 
