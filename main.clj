@@ -1,17 +1,20 @@
 (ns main
-  (:require [incanter.core :as i.core :refer [view to-dataset]])
+  (:require [incanter.core :as i.core :refer [view to-dataset sel]])
   (:require [incanter.charts :as i.charts :refer [histogram xy-plot add-points add-function]])
   (:require [incanter.stats :as i.stats :refer [sample-normal]])
   (:require [incanter.datasets :as i.data])
   (:require [incanter.io :as i.io :refer [read-dataset]]))
 
-(def vertices)
 
-(view (read-dataset "./data/brain_body.csv"
-                    :header true
-                    :delim \space))
+(def vertices (read-dataset "./data/brain_body.csv"
+                            :header true
+                            :delim \space))
 
-(def plain-image (add-points (xy-plot) :x :y :data (to-dataset vertices)))
+(to-dataset vertices)
+(sel vertices :cols 0)
+(view vertices)
+
+(def plain-image (add-points (xy-plot) (sel vertices :cols 0) (sel vertices :cols 1)))
 
 (def population-size 100)
 (def survival-rate 0.5)
