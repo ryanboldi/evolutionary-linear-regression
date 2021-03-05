@@ -1,5 +1,5 @@
 (ns main
-  (:require [incanter.core :as i.core :refer [view to-dataset sel]])
+  (:require [incanter.core :as i.core :refer [view to-dataset $]])
   (:require [incanter.charts :as i.charts :refer [histogram xy-plot add-points add-function]])
   (:require [incanter.stats :as i.stats :refer [sample-normal]])
   (:require [incanter.datasets :as i.data])
@@ -10,11 +10,17 @@
                             :header true
                             :delim \space))
 
+(def xy-vertices
+  (zipmap [:x :y] [(first ($ :body-kg vertices)) (first ($ :brain-g vertices))]))
+
+xy-vertices
+
+($ :body-kg vertices)
+
 (to-dataset vertices)
-(sel vertices :cols 0)
 (view vertices)
 
-(def plain-image (add-points (xy-plot) (sel vertices :cols 0) (sel vertices :cols 1)))
+(def plain-image (add-points (xy-plot) :body-kg :brain-g (to-dataset vertices)))
 
 (def population-size 100)
 (def survival-rate 0.5)
