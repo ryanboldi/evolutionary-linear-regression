@@ -2,15 +2,12 @@
   (:require [incanter.core :as i.core :refer [view to-dataset]])
   (:require [incanter.charts :as i.charts :refer [histogram xy-plot add-points add-function]])
   (:require [incanter.stats :as i.stats :refer [sample-normal]])
-  (:require [incanter.datasets :as i.data]))
+  (:require [incanter.datasets :as i.data])
+  (:require [incanter.io :as i.io :refer [read-dataset]]))
 
-(def vertices
-  (list {:x 1, :y 1}
-        {:x 2, :y 2}
-        {:x 3, :y 3}
-        {:x 4, :y 4}
-        {:x 5, :y 5}
-        {:x 6, :y 6}))
+(def vertices)
+
+(read-dataset "./data/brain_body.csv")
 
 (def plain-image (add-points (xy-plot) :x :y :data (to-dataset vertices)))
 
