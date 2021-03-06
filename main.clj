@@ -126,9 +126,7 @@
   "randomly selects a solution weighted towards higher fitness solutions"
   [population]
   (let [pop population scores (inverse-scores (get-culled-scores pop)) total-score (reduce + scores) rand-num (rand)]
-    (println total-score)
     (loop [index 0 sum-so-far (/ (nth scores index) total-score)]
-      (println rand-num index sum-so-far (/ (nth scores index) total-score))
       (if (< rand-num sum-so-far)
         (nth pop index)
         (recur (inc index) (+ sum-so-far (/ (nth scores (inc index)) total-score)))))))
@@ -155,7 +153,7 @@
 (defn child-creation-instruction-functions
   "returns a lazy-seq of functions to create the missing children with"
   []
-  (repeatedly  (- population-size num-parents)
+  (repeatedly  (- population-size (dec num-parents))
                #(if (< (rand) crossover-rate)
                   cross-and-create
                   duplicate-and-create)))
@@ -164,7 +162,7 @@
   "given an old population, create a new one based on evolutionary rules and probabilities"
   [old-pop]
   (let [parents (repeatedly num-parents #(roulette-wheel-select old-pop))]
-    (println parents)
+    (println "parents:" parents)
     (into parents (map #(% parents) (child-creation-instruction-functions)))))
 
 (defn get-best-solution
