@@ -20,8 +20,8 @@
                                       :x-label "Body Bass (kg)"
                                       :y-label "Brain Mass (g)") :x :y :data (to-dataset vertices)))
 
-(def population-size 600)
-(def survival-rate 0.1)
+(def population-size 5)
+(def survival-rate 0.2)
 (def num-parents (* survival-rate population-size))
 (def mutation-rate 0.5)
 (def crossover-rate 0.1)
@@ -181,12 +181,16 @@
 
 
 (def starting-pop (init-evolution))
+(count starting-pop)
 (print-pop-stats starting-pop)
 
 (def next-pop (create-new-pop starting-pop))
+(count next-pop)
 (print-pop-stats next-pop)
 
-
+(assess-population starting-pop)
+(get-culled-scores starting-pop)
+(assess-solution (roulette-wheel-select starting-pop))
 (view plain-image)
 (view (visualize-solution (get-best-solution (init-evolution))))
 
