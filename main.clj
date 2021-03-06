@@ -20,7 +20,7 @@
                                       :x-label "Body Bass (kg)"
                                       :y-label "Brain Mass (g)") :x :y :data (to-dataset vertices)))
 
-(def population-size 5)
+(def population-size 500)
 (def survival-rate 0.2)
 (def num-parents (* survival-rate population-size))
 (def mutation-rate 0.5)
@@ -162,7 +162,6 @@
   "given an old population, create a new one based on evolutionary rules and probabilities"
   [old-pop]
   (let [parents (repeatedly num-parents #(roulette-wheel-select old-pop))]
-    (println "parents:" parents)
     (into parents (map #(% parents) (child-creation-instruction-functions)))))
 
 (defn get-best-solution
@@ -181,21 +180,16 @@
 
 
 (def starting-pop (init-evolution))
-starting-pop
-(count starting-pop)
 (print-pop-stats starting-pop)
 
 (def next-pop (create-new-pop starting-pop))
-next-pop
-(count next-pop)
 (print-pop-stats next-pop)
 
-(assess-population starting-pop)
-(get-culled-scores starting-pop)
-(inverse-scores (get-culled-scores starting-pop))
-(assess-solution (roulette-wheel-select starting-pop))
-(view plain-image)
-(view (visualize-solution (get-best-solution (init-evolution))))
+(def next-next-pop (create-new-pop next-pop))
+(print-pop-stats next-next-pop)
+
+(view (visualize-solution (get-best-solution starting-pop)))
+(view (visualize-solution (get-best-solution next-next-pop)))
 
 (defn -main
   [& args]
