@@ -1,5 +1,5 @@
 (ns main
-  (:require [incanter.core :as i.core :refer [view to-dataset $]])
+  (:require [incanter.core :as i.core :refer [view to-dataset with-data $]])
   (:require [incanter.charts :as i.charts :refer [histogram xy-plot add-points add-function]])
   (:require [incanter.stats :as i.stats :refer [sample-normal]])
   (:require [incanter.datasets :as i.data])
@@ -16,9 +16,9 @@
                  (nth ($ :brain-g raw-vertices) %)])
        (take (count ($ :body-kg raw-vertices)) (range))))
 
-(to-dataset vertices)
+(def plain-image (add-points (xy-plot) :x :y :data (to-dataset vertices)))
 
-(def plain-image (add-points (xy-plot) :x :y (to-dataset vertices)))
+(view plain-image)
 
 (def population-size 100)
 (def survival-rate 0.5)
