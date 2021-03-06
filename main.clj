@@ -126,10 +126,12 @@
   "randomly selects a solution weighted towards higher fitness solutions"
   [population]
   (let [pop population scores (inverse-scores (get-culled-scores pop)) total-score (reduce + scores) rand-num (rand)]
-    (loop [index 0 sum-so-far (/ (nth scores 0) total-score)]
+    (println total-score)
+    (loop [index 0 sum-so-far (/ (nth scores index) total-score)]
+      (println rand-num index sum-so-far (/ (nth scores index) total-score))
       (if (< rand-num sum-so-far)
         (nth pop index)
-        (recur (inc index) (+ sum-so-far (/ (nth scores index) total-score)))))))
+        (recur (inc index) (+ sum-so-far (/ (nth scores (inc index)) total-score)))))))
 
 (defn maybe-mutate
   "every solution will pass through this function.
@@ -185,11 +187,13 @@
 (print-pop-stats starting-pop)
 
 (def next-pop (create-new-pop starting-pop))
+next-pop
 (count next-pop)
 (print-pop-stats next-pop)
 
 (assess-population starting-pop)
 (get-culled-scores starting-pop)
+(inverse-scores (get-culled-scores starting-pop))
 (assess-solution (roulette-wheel-select starting-pop))
 (view plain-image)
 (view (visualize-solution (get-best-solution (init-evolution))))
