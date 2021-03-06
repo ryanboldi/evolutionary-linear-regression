@@ -6,21 +6,19 @@
   (:require [incanter.io :as i.io :refer [read-dataset]]))
 
 
-(def vertices (read-dataset "./data/brain_body.csv"
-                            :header true
-                            :delim \space))
+(def raw-vertices (read-dataset "./data/brain_body.csv"
+                                :header true
+                                :delim \space))
 
-(def xy-vertices
-  (zipmap [:x :y] [(first ($ :body-kg vertices)) (first ($ :brain-g vertices))]))
-
-xy-vertices
-
-($ :body-kg vertices)
+(def vertices
+  (map #(zipmap [:x :y]
+                [(nth ($ :body-kg raw-vertices) %)
+                 (nth ($ :brain-g raw-vertices) %)])
+       (take (count ($ :body-kg raw-vertices)) (range))))
 
 (to-dataset vertices)
-(view vertices)
 
-(def plain-image (add-points (xy-plot) :body-kg :brain-g (to-dataset vertices)))
+(def plain-image (add-points (xy-plot) :x :y (to-dataset vertices)))
 
 (def population-size 100)
 (def survival-rate 0.5)
