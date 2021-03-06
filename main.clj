@@ -153,7 +153,7 @@
 (defn child-creation-instruction-functions
   "returns a lazy-seq of functions to create the missing children with"
   []
-  (repeatedly  (- population-size (dec num-parents))
+  (repeatedly  (- population-size num-parents)
                #(if (< (rand) crossover-rate)
                   cross-and-create
                   duplicate-and-create)))
@@ -178,7 +178,6 @@
   [population]
   (println (str "Best Fitness: " (assess-solution (get-best-solution population))))
   (println (str "Average Fitness: " (average-fitness population))))
-
 
 
 (def starting-pop (init-evolution))
