@@ -20,14 +20,12 @@
                                       :x-label "Body Bass (kg)"
                                       :y-label "Brain Mass (g)") :x :y :data (to-dataset vertices)))
 
-(view plain-image)
-
-(def population-size 100)
-(def survival-rate 0.5)
+(def population-size 600)
+(def survival-rate 0.1)
 (def num-parents (* survival-rate population-size))
-(def mutation-rate 0.2)
+(def mutation-rate 0.5)
 (def crossover-rate 0.1)
-(def mutation-size 0.2) ; sd of the normal sampling
+(def mutation-size 0.5) ; sd of the normal sampling
 
 ;--- SOLUTION FUNCTIONS
 
@@ -113,9 +111,9 @@
 
 (defn cull-score-if-needed
   [solution average-fitness]
-  (if (< average-fitness (assess-solution solution))
-    average-fitness
-    (assess-solution solution)))
+  (let [score (assess-solution solution)] (if (< average-fitness score)
+                                            average-fitness
+                                            score)))
 
 (defn get-culled-scores
   "returns a list with all numbers above the average set to the average value."
@@ -179,6 +177,14 @@
   [population]
   (println (str "Best Fitness: " (assess-solution (get-best-solution population))))
   (println (str "Average Fitness: " (average-fitness population))))
+
+
+
+(def starting-pop (init-evolution))
+(print-pop-stats starting-pop)
+
+(def next-pop (create-new-pop starting-pop))
+(print-pop-stats next-pop)
 
 
 (view plain-image)
