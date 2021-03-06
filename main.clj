@@ -16,7 +16,9 @@
                  (nth ($ :brain-g raw-vertices) %)])
        (take (count ($ :body-kg raw-vertices)) (range))))
 
-(def plain-image (add-points (xy-plot) :x :y :data (to-dataset vertices)))
+(def plain-image (add-points (xy-plot nil nil
+                                      :x-label "Body Bass (kg)"
+                                      :y-label "Brain Mass (g)") :x :y :data (to-dataset vertices)))
 
 (view plain-image)
 
