@@ -163,7 +163,8 @@
 (defn create-new-pop
   "given an old population, create a new one based on evolutionary rules and probabilities"
   [old-pop]
-  (let [parents (repeat num-parents (roulette-wheel-select old-pop))]
+  (let [parents (repeatedly num-parents #(roulette-wheel-select old-pop))]
+    (println parents)
     (into parents (map #(% parents) (child-creation-instruction-functions)))))
 
 (defn get-best-solution
@@ -183,6 +184,7 @@
 
 
 (def starting-pop (init-evolution))
+starting-pop
 (count starting-pop)
 (print-pop-stats starting-pop)
 
