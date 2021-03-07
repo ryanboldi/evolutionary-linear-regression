@@ -19,13 +19,12 @@
 (def plain-image (add-points (xy-plot nil nil
                                       :x-label "Body Bass (kg)"
                                       :y-label "Brain Mass (g)") :x :y :data (to-dataset vertices)))
-
-(def population-size 500)
 (def survival-rate 0.2)
+(def population-size 10)
 (def num-parents (* survival-rate population-size))
 (def mutation-rate 0.5)
 (def crossover-rate 0.1)
-(def mutation-size 0.5) ; sd of the normal sampling
+(def mutation-size 10) ; sd of the normal sampling
 
 ;--- SOLUTION FUNCTIONS
 
